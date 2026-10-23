@@ -20,6 +20,7 @@ keybinds clear-defaults=true {
     }
     pane {
         bind "p" { SwitchToMode "Normal"; }
+        bind "+" { NewPane "Right"; NewPane "Down"; MoveFocus "Right"; NewPane "Down"; SwitchToMode "Locked"; }
         bind "h" "Left" { MoveFocus "Left"; }
         bind "l" "Right" { MoveFocus "Right"; }
         bind "j" "Down" { MoveFocus "Down"; }
