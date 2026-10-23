@@ -201,7 +201,7 @@ impl PaneNotCreatedReason {
     }
     pub fn pane_error_text(&self) -> Option<&'static str> {
         match self {
-            PaneNotCreatedReason::NoRoom => Some("CAN'T SPLIT!"),
+            PaneNotCreatedReason::NoRoom => None,
             PaneNotCreatedReason::FloatingPanesVisible => Some("FLOATING PANES VISIBLE!"),
             _ => None,
         }
