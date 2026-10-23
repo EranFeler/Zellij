@@ -3,6 +3,7 @@ use zellij_tile::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ActionType {
+    Fourify,
     MoveFocus,
     MovePaneWithDirection,
     MovePaneWithoutDirection,
@@ -41,6 +42,7 @@ pub enum ActionType {
 impl ActionType {
     pub fn description(&self) -> String {
         match self {
+            ActionType::Fourify => "fourify".to_string(),
             ActionType::MoveFocus => "Move focus".to_string(),
             ActionType::MovePaneWithDirection => "Move pane".to_string(),
             ActionType::MovePaneWithoutDirection => "Move pane".to_string(),
@@ -140,6 +142,42 @@ impl ActionType {
             action if action.launches_plugin("zellij:about") => ActionType::About,
             action if matches!(action, Action::NewTab { .. }) => ActionType::NewTab,
             _ => ActionType::Other(format!("{:?}", action)),
+        }
+    }
+
+    pub fn from_actions(actions: &[Action]) -> Self {
+        if actions.len() == 5
+            && matches!(
+                actions,
+                [
+                    Action::NewPane {
+                        direction: Some(Direction::Right),
+                        pane_name: None,
+                        start_suppressed: false
+                    },
+                    Action::NewPane {
+                        direction: Some(Direction::Down),
+                        pane_name: None,
+                        start_suppressed: false
+                    },
+                    Action::MoveFocus {
+                        direction: Direction::Right
+                    },
+                    Action::NewPane {
+                        direction: Some(Direction::Down),
+                        pane_name: None,
+                        start_suppressed: false
+                    },
+                    Action::SwitchToMode { .. }
+                ]
+            )
+        {
+            ActionType::Fourify
+        } else {
+            actions
+                .first()
+                .map(Self::from_action)
+                .unwrap_or_else(|| ActionType::Other("".to_string()))
         }
     }
 }
