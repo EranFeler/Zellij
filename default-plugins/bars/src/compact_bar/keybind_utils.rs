@@ -87,7 +87,7 @@ impl KeybindProcessor {
             for (_key, actions) in &keybinds {
                 if let Some(first_action) = actions.first() {
                     if predicate(first_action) {
-                        let action_type = ActionType::from_action(first_action);
+                        let action_type = ActionType::from_actions(actions);
 
                         if processed_action_types.contains(&action_type) {
                             break;
@@ -96,8 +96,8 @@ impl KeybindProcessor {
                         let mut matching_keys = Vec::new();
 
                         for (inner_key, inner_actions) in &keybinds {
-                            if let Some(inner_first_action) = inner_actions.first() {
-                                if ActionType::from_action(inner_first_action) == action_type {
+                            if !inner_actions.is_empty() {
+                                if ActionType::from_actions(inner_actions) == action_type {
                                     matching_keys
                                         .push((format!("{}", inner_key), inner_actions.clone()));
                                 }
@@ -357,7 +357,7 @@ impl KeybindProcessor {
                         matches!(
                             action,
                             Action::NewPane {
-                                direction: None,
+                                direction: _,
                                 pane_name: None,
                                 start_suppressed: false
                             }
